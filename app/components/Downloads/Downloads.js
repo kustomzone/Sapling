@@ -16,6 +16,7 @@ const event = require('../../utils/eventhandler');
 export default class Downloads extends Component {
   componentWillMount() {
     ipcRenderer.on('wallet-downloaded', (e, err) => {
+        console.log("dan");
       if (err) {
         event.emit('hide');
         event.emit('animate', err);
@@ -28,6 +29,7 @@ export default class Downloads extends Component {
         };
         return request(opts)
           .then((response) => {
+            console.log(response);
             const path = `${homedir}/.eccoin-wallet`;
             const parsed = JSON.parse(response);
             const version = parsed.name;

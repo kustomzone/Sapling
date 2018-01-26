@@ -56,7 +56,7 @@ export default class Sidebar extends Component {
     }, 5000);
     this.timerCheckWalletVersion = setInterval(() => {
       this.checkWalletVersion();
-    }, 5000);
+    }, 600000);
 
     this.checkWalletVersion();
 
@@ -77,7 +77,7 @@ export default class Sidebar extends Component {
   }
 
   infoUpdate() {
-    const results = this.props.getStateValues('blocks', 'headers', 'connections', 'starting', 'running', 'stopping', 'off', 'walletInstalled', 'newVersionAvailable');
+    const results = this.props.getStateValues('blocks', 'headers', 'connections', 'starting', 'running', 'stopping', 'off', 'walletInstalled');
     const newState = {};
     for (let key in results) {
       // console.log(key, results[key]);
@@ -88,7 +88,12 @@ export default class Sidebar extends Component {
 
   checkWalletVersion() {
     try {
-      const result = updater.checkWalletVersion();
+      let result = true;
+      let exists = updater.checkForWalletVersion();
+      if(exists){
+        result = updater.checkWalletVersion();
+      }
+        console.log(result);
       this.setState(() => { return { newVersionAvailable: result, }; });
     } catch (err) { console.log(err); }
   }
@@ -261,11 +266,11 @@ export default class Sidebar extends Component {
                 </button>
               : <button className="stopStartButton" disabled>Wallet starting...</button>
         }
-        {this.state.newVersionAvailable
+        {this.state.newVersionAvailable && this.state.walletInstalled
             ? <div className="new-version">New Wallet Version Available</div>
             : null
         }
-        {this.state.newVersionAvailable
+        {this.state.newVersionAvailable && this.state.walletInstalled
             ? 
             <Link to="/downloads" id="a-tag-button-wrapper">
                <button className="stopStartButton">
