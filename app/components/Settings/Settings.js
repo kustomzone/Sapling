@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import SettingsMain from    '../../components/SettingsPage/SettingsMain';
-import SettingsNet from     '../../components/SettingsPage/SettingsNet';
-import SettingsDisplay from '../../components/SettingsPage/SettingsDisplay';
-import SettingsDebug from   '../../components/SettingsPage/SettingsDebug';
-import SettingsConfig from  '../../components/SettingsPage/SettingsConfig';
+import SettingsMain from './SettingsMain';
+import SettingsNet from './SettingsNet';
+import SettingsDisplay from './SettingsDisplay';
+import SettingsDebug from './SettingsDebug';
+import SettingsConfig from './SettingsConfig';
 
 import { traduction } from '../../lang/lang';
 

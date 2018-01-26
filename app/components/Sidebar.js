@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { walletwrapper } from '../utils/walletwrapper';
 import { updater } from '../utils/updater';
 import { traduction } from '../lang/lang';
-const event = require('../utils/eventhandler');
 const { ipcRenderer } = require('electron');
+
+const usericon = require('../../resources/images/logo1.png');
 
 const lang = traduction();
 
@@ -76,21 +77,20 @@ export default class Sidebar extends Component {
   }
 
   infoUpdate() {
-    var results = this.props.getStateValues('blocks', 'headers', 'connections', 'starting', 'running', 'stopping', 'off', 'walletInstalled', 'newVersionAvailable');
+    const results = this.props.getStateValues('blocks', 'headers', 'connections', 'starting', 'running', 'stopping', 'off', 'walletInstalled', 'newVersionAvailable');
     const newState = {};
-    for ( let key in results ) {
-      //console.log(key, results[key]);
+    for (let key in results) {
+      // console.log(key, results[key]);
       newState[key] = results[key];
       }
     this.setState(newState);
   }
 
   checkWalletVersion() {
-    try{
-        var result = updater.checkWalletVersion();
-        this.setState(() => { return { newVersionAvailable : result, }; });
-    }
-    catch(err){ console.log(err); }
+    try {
+      const result = updater.checkWalletVersion();
+      this.setState(() => { return { newVersionAvailable: result, }; });
+    } catch (err) { console.log(err); }
   }
 
   checkStateMenu(pathname) {
@@ -166,7 +166,6 @@ export default class Sidebar extends Component {
       progressBar = 99.99;
     }
 
-    const usericon = require('../../resources/images/logo1.png');
     return (
       <div className="sidebar">
         <div className="userimage">
