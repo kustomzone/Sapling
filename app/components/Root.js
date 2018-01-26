@@ -7,8 +7,6 @@ import { traduction } from '../lang/lang';
 
 require('jquery');
 
-const lang = traduction();
-
 type RootType = {
   store: {},
   history: {}

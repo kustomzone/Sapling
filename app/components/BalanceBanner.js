@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import glob from 'glob';
 import { traduction } from '../lang/lang';
+
 const config = require('../../config');
-const request = require('request-promise-native');
-const fs = require('fs');
-const event = require('../utils/eventhandler');
 const lang = traduction();
 
 export default class BalanceBanner extends Component {
   constructor(props) {
     super(props);
-    this.state  = {
+    this.state = {
       balance: 0,
       unconfirmed: 0,
       stake: 0,
@@ -35,10 +31,10 @@ export default class BalanceBanner extends Component {
   }
 
   getWalletInfo() {
-    var results = this.props.getStateValues('balance', 'stake', 'unconfirmed');
+    const results = this.props.getStateValues('balance', 'stake', 'unconfirmed');
     const newState = {};
-    for ( let key in results ) {
-      //console.log(key, results[key]);
+    for (let key in results) {
+      // console.log(key, results[key]);
       newState[key] = results[key];
     }
     this.setState(newState);
