@@ -7,6 +7,9 @@ const event = require('../utils/eventhandler');
 const lang = traduction();
 const wallet = new Wallet();
 
+const lockedPad = require('../../resources/images/padclose.png');
+const unlockedPad = require('../../resources/images/padopen.png');
+
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -192,10 +195,6 @@ export default class Home extends Component {
   }
 
   render() {
-    let pad = require('../../resources/images/padclose.png');
-    if (!this.state.locked) {
-      pad = require('../../resources/images/padopen.png');
-    }
     return (
       <div className="home">
         <div className="row">
@@ -204,7 +203,11 @@ export default class Home extends Component {
               <div className="panel-body">
                 <div>
                   <p className="title">{lang.overviewMyWallet}</p>
-                  <img className="padicon" src={pad} onClick={this.changeWalletState} />
+                  {
+                    this.state.locked
+                      ? <img className="padicon" alt="wallet locked" src={lockedPad} onClick={this.changeWalletState} />
+                      : <img className="padicon" alt="wallet unlocked" src={unlockedPad} onClick={this.changeWalletState} />
+                  }
                 </div>
                 <p className="title">{lang.overviewMyLatest100Transactions}</p>
                 <div className="selectfield">
