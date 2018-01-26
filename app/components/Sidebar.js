@@ -56,7 +56,7 @@ export default class Sidebar extends Component {
     }, 5000);
     this.timerCheckWalletVersion = setInterval(() => {
       this.checkWalletVersion();
-    }, 600000);
+    }, 5000);
 
     this.checkWalletVersion();
 
@@ -260,11 +260,21 @@ export default class Sidebar extends Component {
                   Start Wallet
                 </button>
               : <button className="stopStartButton" disabled>Wallet starting...</button>
-          }
-          {this.state.newVersionAvailable
+        }
+        {this.state.newVersionAvailable
             ? <div className="new-version">New Wallet Version Available</div>
             : null
-          }
+        }
+        {this.state.newVersionAvailable
+            ? 
+            <Link to="/downloads" id="a-tag-button-wrapper">
+               <button className="stopStartButton">
+                   Click to update Wallet
+                </button>
+            </Link>
+            :
+            null
+        }
         </div>
       </div>
     );
