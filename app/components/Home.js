@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import TransactionTable from './Transactions/TransactionTable';
 import Wallet from '../utils/wallet';
 import { traduction } from '../lang/lang';
-import glob from 'glob';
+
 const event = require('../utils/eventhandler');
 const lang = traduction();
 const wallet = new Wallet();

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import fs from 'fs';
 
+const config = require('../../../config');
+
 const request = require('request-promise-native');
 
 // axios.defaults.adapter = require('axios/lib/adapters/http');
@@ -46,39 +48,46 @@ export default class Downloads extends Component {
   }
   downloadLinux64 = () => {
     event.emit('show', 'Wallet downloading...');
-    ipcRenderer.send('wallet-download', { url: 'https://www.ecc.network/downloads/updates/eccoind-linux64', filename: 'Eccoind' });
+    ipcRenderer.send('wallet-download', { url: config.linux64, filename: 'Eccoind' });
   };
   downloadLinux32 = () => {
     event.emit('show', 'Wallet downloading...');
-    ipcRenderer.send('wallet-download', { url: 'https://www.ecc.network/downloads/updates/eccoind-linux32', filename: 'Eccoind' });
+    ipcRenderer.send('wallet-download', { url: config.linux32, filename: 'Eccoind' });
 
   };
   downloadWindows64 = () => {
     event.emit('show', 'Wallet downloading...');
-    ipcRenderer.send('wallet-download', { url: 'https://www.ecc.network/downloads/updates/eccoind-win64.exe', filename: 'Eccoind' });
+    ipcRenderer.send('wallet-download', { url: config.win32, filename: 'Eccoind' });
   };
   downloadWindows32 = () => {
     event.emit('show', 'Wallet downloading...');
-    ipcRenderer.send('wallet-download', { url: 'https://www.ecc.network/downloads/updates/eccoind-win32.exe', filename: 'Eccoind' });
+    ipcRenderer.send('wallet-download', { url: config.win64, filename: 'Eccoind' });
+  };
+  downloadMacOSX = () => {
+    event.emit('show', 'Wallet downloading...');
+    ipcRenderer.send('wallet-download', { url: config.osx, filename: 'Eccoind' });
   };
   render() {
     return (
-      <div className={'row downloads'}>
+      <div className="downloads">
         <div className="col-md-12">
           <p className="title">Downloads</p>
           <div className="panel panel-default">
             <div className="panel-body text-center larger-text">
-              <div className="download-link-container col-md-3 col-lg-3 col-xs-6" style={{ cursor: 'pointer' }}>
-                <a className="download-link" onClick={this.downloadLinux64}>Linux 64 Bit</a>
+              <div className="download-link-container">
+                <a className="download-link" onClick={this.downloadLinux32} style={{ cursor: 'pointer' }}>Linux 32 Bit</a>
               </div>
-              <div className="download-link-container col-md-3 col-lg-3 col-xs-6" style={{ cursor: 'pointer' }}>
-                <a className="download-link" onClick={this.downloadLinux32}>Linux 32 Bit</a>
+              <div className="download-link-container">
+                <a className="download-link" onClick={this.downloadLinux64} style={{ cursor: 'pointer' }}>Linux 64 Bit</a>
               </div>
-              <div className="download-link-container col-md-3 col-lg-3 col-xs-6" style={{ cursor: 'pointer' }}>
-                <a className="download-link" onClick={this.downloadWindows64}>Windows 64 Bit</a>
+              <div className="download-link-container">
+                <a className="download-link" onClick={this.downloadMacOSX} style={{ cursor: 'pointer' }}>Mac OS X</a>
               </div>
-              <div className="download-link-container col-md-3 col-lg-3 col-xs-6" style={{ cursor: 'pointer' }}>
-                <a className="download-link" onClick={this.downloadWindows32}>Windows 32 Bit</a>
+              <div className="download-link-container">
+                <a className="download-link" onClick={this.downloadWindows32} style={{ cursor: 'pointer' }}>Windows 32 Bit</a>
+              </div>
+              <div className="download-link-container">
+                <a className="download-link" onClick={this.downloadWindows64} style={{ cursor: 'pointer' }}>Windows 64 Bit</a>
               </div>
             </div>
           </div>

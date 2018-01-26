@@ -5,5 +5,10 @@
   "githubLink": "https://github.com/CryptoUnited/Sapling",
   "githubText" : "Sapling Github",
   "bitcointalkLink": "#",
-  "bitcointalkText": "This is a place holder for BCT link"
+  "bitcointalkText": "This is a place holder for BCT link",
+  "linux32": "https://www.ecc.network/downloads/updates/eccoind-linux32",
+  "linux64": "https://www.ecc.network/downloads/updates/eccoind-linux64",
+  "win32": "https://www.ecc.network/downloads/updates/eccoind-win64.exe",
+  "win64": "https://www.ecc.network/downloads/updates/eccoind-win32.exe",
+  "osx": "https://www.ecc.network/downloads/updates/eccoind-osx.dmg"
 }

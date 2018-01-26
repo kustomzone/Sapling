@@ -3,17 +3,17 @@
 @import "~bootstrap-material-design/dist/css/bootstrap-material-design.css";
 @import "~bootstrap-material-design/dist/css/ripples.min.css";
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700');
-@import "./styles/Sidebar.css";
-@import "./styles/BalanceBanner.css";
-@import "./styles/About.css";
-@import "./styles/Security.css";
-@import "./styles/Home.css";
-@import "./styles/Receive.css";
-@import "./styles/Send.css";
-@import "./styles/Transactions.css";
-@import "./styles/Settings.css";
-@import "./styles/Config.css";
-@import "./styles/Downloads.css";
+@import "styles/Sidebar";
+@import "styles/BalanceBanner";
+@import "styles/About";
+@import "styles/Security";
+@import "styles/Home";
+@import "styles/Receive";
+@import "styles/Send";
+@import "styles/Transactions";
+@import "styles/Settings";
+@import "styles/Config";
+@import "styles/Downloads";
 
 html,
 body {
