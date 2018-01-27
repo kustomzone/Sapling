@@ -14,7 +14,6 @@ export default class WalletWrapper extends Component {
           running: false,
           stopping: false,
           walletInstalled: false,
-          locked: false,
 
           //getblockchaininfo
           chain: "",
@@ -263,9 +262,16 @@ export default class WalletWrapper extends Component {
         });
     }
 
+    unlockWallet(passPhrase, seconds, only_staking) {
+        wallet.walletpassphrase(passPhrase, seconds, only_staking).then((data) => {
+        }).catch((err) => {
+           this.processError(err);
+        });
+    }
+
     render() {
       const { children } = this.props;
-
+        console.log(children);
       const childrenWithProps = React.Children.map(children, child => {
         return React.cloneElement(child, {
           startStopWalletHandler: this.startStopWalletHandler,

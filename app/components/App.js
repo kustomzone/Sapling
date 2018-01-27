@@ -72,10 +72,8 @@ export default class App extends Component<Props> {
         <WalletWrapper>
           <BalanceBanner route={this.props.route} />
           <Sidebar route={this.props.route} />
-        </WalletWrapper>
-        <div className="my_wrapper">
           {this.props.children}
-        </div>
+        </WalletWrapper>
         <div className="snack">
           <p id="snackMsg" />
         </div>

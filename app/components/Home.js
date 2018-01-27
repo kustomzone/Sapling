@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import TransactionTable from './Transactions/TransactionTable';
-import Wallet from '../utils/wallet';
+import { walletwrapper } from '../utils/walletwrapper';
 import { traduction } from '../lang/lang';
 
 const event = require('../utils/eventhandler');
 const lang = traduction();
-const wallet = new Wallet();
 
 const lockedPad = require('../../resources/images/padclose.png');
 const unlockedPad = require('../../resources/images/padopen.png');
@@ -18,17 +17,15 @@ export default class Home extends Component {
       dialog: false,
       timeL: '',
       passPhrase: '',
-      passPhraseError: '',
-      locked: true,
-      staking: false,
+      unlocked_until: true,
     };
+    this.infoUpdate = this.infoUpdate.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.showWalletUnlockDialog = this.showWalletUnlockDialog.bind(this);
     this.cancelDialog = this.cancelDialog.bind(this);
     this.confirmDialog = this.confirmDialog.bind(this);
     this.onPassPhraseChange = this.onPassPhraseChange.bind(this);
     this.onTimeLChange = this.onTimeLChange.bind(this);
-    this.getLockedState = this.getLockedState.bind(this);
   }
 
   handleChange(event) {
@@ -50,9 +47,10 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
+    this.infoUpdate();
     const self = this;
     self.timerInfo = setInterval(() => {
-        self.getLockedState();
+        self.infoUpdate();
     }, 5000);
 
   }
@@ -60,31 +58,18 @@ export default class Home extends Component {
     clearInterval(this.timerInfo);
   }
 
-  getLockedState() {
-    const self = this;
-    wallet.getInfo().then((data) => {
-        let locked = true;
-        if (data.unlocked_until !== 0) {
-          locked = false;
-        }
-        self.setState({
-          locked,
-          staking: data.staking,
-        });
-      event.emit('hide');
-    }).catch((err) => {
-        console.log(err);
-        if (err.message !== 'Loading block index...' && err.message !== 'connect ECONNREFUSED 127.0.0.1:19119') {
-          event.emit('animate', err.message);
-        }
-        self.setState({
-          locked: true,
-        });
-    });
+  infoUpdate() {
+    console.log(this.props);
+    const results = this.props.getStateValues('unlocked_until');
+    const newState = {};
+    for (let key in results) {
+      newState[key] = results[key];
+      }
+    this.setState(newState);
   }
 
   renderDialogBody() {
-    if (this.state.locked) {
+    if (this.state.unlocked_until == 0) {
       return (
         <div>
           <div className="header">
@@ -99,7 +84,6 @@ export default class Home extends Component {
               <div className="col-md-10 col-md-offset-1 input-group" style={{ marginTop: '15px' }}>
                 <input className="form-control inpuText" type="number" value={this.state.timeL} onChange={this.onTimeLChange} placeholder={lang.secondsUnlocked} />
               </div>
-              <p className="passPhraseError">{this.state.passPhraseError}</p>
             </div>
           </div>
         </div>
@@ -137,53 +121,43 @@ export default class Home extends Component {
   }
 
   cancelDialog() {
-    this.setState({ dialog: false, passPhraseError: '', passPhrase: '', timeL: '' });
+    this.setState({ dialog: false, passPhrase: '', timeL: '' });
   }
 
-  confirmDialog() {
-    const self = this;
-    if (this.state.locked) {
-      const passPhrase = this.state.passPhrase;
-      const timeL = this.state.timeL;
-
-      if (passPhrase.length === 0 || timeL.length === 0 || timeL < 0) {
-        self.setState({ passPhraseError: lang.invalidFields });
-      } else {
-        wallet.walletpassphrase(passPhrase, timeL).then((data) => {
-          if (data !== null && data.code === -14) {
-            self.setState({ passPhraseError: lang.walletWrongPass });
-          } else if (data !== null && data.code === 'ECONNREFUSED') {
-            event.emit('show', lang.notificationWalletDownOrSyncing);
-            self.setState({ dialog: false, passPhraseError: '', passPhrase: '', timeL: '' });
-          } else if (data === null) {
-            event.emit('animate', `${lang.walletUnlockedFor} ${timeL} ${lang.sedonds}`);
-            self.setState({dialog: false, passPhraseError: '', passPhrase: '', timeL: '' });
-          } else {
-            event.emit('show', lang.notificationWalletDownOrSyncing);
-            self.setState({ dialog: false, passPhraseError: '', passPhrase: '', timeL: '' });
-          }
-        }).catch((err) => {
-          console.log(err);
-          self.setState({ passPhraseError: lang.walletUnlockError });
-        });
-      }
-    } else {
-      wallet.walletlock().then((data) => {
-        if (data === null) {
-          event.emit('animate', lang.walletLocked);
+    confirmDialog() {
+        const self = this;
+        if (this.state.unlocked_until == 0) {
+            const passPhrase = this.state.passPhrase;
+            let timeL = this.state.timeL;
+            if(timeL == 0) {
+                timeL = 300000;
+            }
+            walletwrapper.walletpassphrase(passPhrase, timeL, false).then((data) => {
+                if (data === null) {
+                    event.emit('animate', `${lang.walletUnlockedFor} ${timeL} ${lang.sedonds}`);
+                }
+                self.setState({ dialog: false, passPhrase: '', timeL: '' });
+            }).catch((err) => {
+                self.setState({ dialog: false, passPhrase: '', timeL: '' });
+            });
         } else {
-          event.emit('animate', lang.walletLockedError);
+            walletwrapper.walletlock().then((data) => {
+                if (data === null) {
+                    event.emit('animate', lang.walletLocked);
+                } else {
+                    event.emit('animate', lang.walletLockedError);
+                }
+            }).catch((err) => {
+                console.log(err);
+                event.emit('animate', lang.walletLockedError);
+            });
+            self.setState({ dialog: false, passPhrase: '', timeL: '' })
         }
-      }).catch((err) => {
-        console.log(err);
-        event.emit('animate', lang.walletLockedError);
-      });
-      self.setState({ dialog: false, passPhraseError: '', passPhrase: '', timeL: '' });
     }
-  }
 
   render() {
     return (
+      <div className="my_wrapper">
       <div className="home">
         <div className="row">
           <div className="col-md-12 ">
@@ -219,6 +193,7 @@ export default class Home extends Component {
           </div>
         </div>
         {this.renderDialog()}
+      </div>
       </div>
     );
   }
