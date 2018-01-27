@@ -23,11 +23,12 @@ export default class Home extends Component {
       staking: false,
     };
     this.handleChange = this.handleChange.bind(this);
-    this.changeWalletState = this.changeWalletState.bind(this);
+    this.showWalletUnlockDialog = this.showWalletUnlockDialog.bind(this);
     this.cancelDialog = this.cancelDialog.bind(this);
     this.confirmDialog = this.confirmDialog.bind(this);
     this.onPassPhraseChange = this.onPassPhraseChange.bind(this);
     this.onTimeLChange = this.onTimeLChange.bind(this);
+    this.getLockedState = this.getLockedState.bind(this);
   }
 
   handleChange(event) {
@@ -42,35 +43,26 @@ export default class Home extends Component {
     this.setState({ timeL: event.target.value });
   }
 
-  changeWalletState() {
+  showWalletUnlockDialog() {
     this.setState(() => {
       return { dialog: true };
     });
   }
 
   componentDidMount() {
-    this.setState({ requestingLockState: true });
-    this.setTimerFunctions();
-  }
-  componentWillUnmount() {
-    this.state.requestingLockState = false;
-    clearInterval(this.timerInfo);
-  }
-
-  setTimerFunctions() {
     const self = this;
     self.timerInfo = setInterval(() => {
-      if (!self.state.requestingLockState) {
-        self.getWalletInfo();
-      }
+        self.getLockedState();
     }, 5000);
+
+  }
+  componentWillUnmount() {
+    clearInterval(this.timerInfo);
   }
 
   getLockedState() {
     const self = this;
-    this.setState({ requestingLockState: true });
     wallet.getInfo().then((data) => {
-      if(self.state.requestingLockState){
         let locked = true;
         if (data.unlocked_until !== 0) {
           locked = false;
@@ -78,20 +70,16 @@ export default class Home extends Component {
         self.setState({
           locked,
           staking: data.staking,
-          reuqestingLockState: false,
         });
-      }
       event.emit('hide');
     }).catch((err) => {
-      if(self.state.requestingLockState && err.message !== 'Method not found') {
+        console.log(err);
         if (err.message !== 'Loading block index...' && err.message !== 'connect ECONNREFUSED 127.0.0.1:19119') {
           event.emit('animate', err.message);
         }
         self.setState({
           locked: true,
-          requestingLockState: false,
         });
-      }
     });
   }
 
@@ -205,8 +193,8 @@ export default class Home extends Component {
                   <p className="title">{lang.overviewMyWallet}</p>
                   {
                     this.state.locked
-                      ? <img className="padicon" alt="wallet locked" src={lockedPad} onClick={this.changeWalletState} />
-                      : <img className="padicon" alt="wallet unlocked" src={unlockedPad} onClick={this.changeWalletState} />
+                      ? <img className="padicon" alt="wallet locked" src={lockedPad} onClick={this.showWalletUnlockDialog} />
+                      : <img className="padicon" alt="wallet unlocked" src={unlockedPad} onClick={this.showWalletUnlockDialog} />
                   }
                 </div>
                 <p className="title">{lang.overviewMyLatest100Transactions}</p>

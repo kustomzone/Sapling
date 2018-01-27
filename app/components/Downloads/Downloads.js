@@ -50,24 +50,23 @@ export default class Downloads extends Component {
   }
   downloadLinux64 = () => {
     event.emit('show', 'Wallet downloading...');
-    ipcRenderer.send('wallet-download', { url: config.linux64, filename: 'Eccoind' });
+    ipcRenderer.send('wallet-download', { url: config.linux64, filename: config.downloadFileName });
   };
   downloadLinux32 = () => {
     event.emit('show', 'Wallet downloading...');
-    ipcRenderer.send('wallet-download', { url: config.linux32, filename: 'Eccoind' });
-
+    ipcRenderer.send('wallet-download', { url: config.linux32, filename: config.downloadFileName });
   };
   downloadWindows64 = () => {
     event.emit('show', 'Wallet downloading...');
-    ipcRenderer.send('wallet-download', { url: config.win32, filename: 'Eccoind' });
+    ipcRenderer.send('wallet-download', { url: config.win32, filename: config.downloadFileName });
   };
   downloadWindows32 = () => {
     event.emit('show', 'Wallet downloading...');
-    ipcRenderer.send('wallet-download', { url: config.win64, filename: 'Eccoind' });
+    ipcRenderer.send('wallet-download', { url: config.win64, filename: config.downloadFileName });
   };
   downloadMacOSX = () => {
     event.emit('show', 'Wallet downloading...');
-    ipcRenderer.send('wallet-download', { url: config.osx, filename: 'Eccoind' });
+    ipcRenderer.send('wallet-download', { url: config.osx, filename: config.downloadFileName });
   };
   render() {
     return (

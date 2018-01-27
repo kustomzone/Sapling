@@ -20,7 +20,6 @@ export default class Updater {
                     headers: { 'User-Agent': 'request', },
                 };
                 return request(opts).then((response) => {
-                    console.log(response);
                     const path = `${homedir}/.eccoin-wallet`;
                     const parsed = JSON.parse(response);
                     const githubVersion = parsed.name.split(' ')[1];

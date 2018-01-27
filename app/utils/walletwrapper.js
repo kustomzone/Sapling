@@ -14,6 +14,7 @@ export default class WalletWrapper extends Component {
           running: false,
           stopping: false,
           walletInstalled: false,
+          locked: false,
 
           //getblockchaininfo
           chain: "",
@@ -65,7 +66,6 @@ export default class WalletWrapper extends Component {
         let results = {};
         for(let i = 0; i < arguments.length; i++)
         {
-            //console.log("checking for arg " + arguments[i]);
             if(this.state[arguments[i]] !== undefined)
             {
                 results[arguments[i]] = this.state[arguments[i]];
@@ -98,14 +98,14 @@ export default class WalletWrapper extends Component {
     }
 
     getBlockchainInfo() {
-//        wallet.getBlockchainInfo().then((data) => {
-//            this.setState({
-//                chain: data.chain,
-//                bestblockhash: data.bestblockhash,
-//            });
-//        }).catch((err) => {
-//           this.processError(err);
-//        });
+        wallet.getBlockchainInfo().then((data) => {
+            this.setState({
+                chain: data.chain,
+                bestblockhash: data.bestblockhash,
+            });
+        }).catch((err) => {
+           this.processError(err);
+        });
     }
 
     getInfo() {
@@ -136,14 +136,14 @@ export default class WalletWrapper extends Component {
 
 
     getWalletInfo() {
-//        wallet.getWalletInfo().then((data) => {
-//            this.setState({
-//                unconfirmed: data.unconfirmed_balance,
-//                immature: data.immature_balance,
-//            });
-//        }).catch((err) => {
-//            this.processError(err);
-//        });
+        wallet.getWalletInfo().then((data) => {
+            this.setState({
+                unconfirmed: data.unconfirmed_balance,
+                immature: data.immature_balance,
+            });
+        }).catch((err) => {
+            this.processError(err);
+        });
     }
 
     evaluateStatus(){
