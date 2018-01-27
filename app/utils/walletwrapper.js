@@ -14,7 +14,6 @@ export default class WalletWrapper extends Component {
           running: false,
           stopping: false,
           walletInstalled: false,
-          newVersionAvailable: false,
 
           //getblockchaininfo
           chain: "",

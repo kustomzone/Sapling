@@ -1,7 +1,10 @@
-.panel {
+.downloads .panel-body {
+  display: flex;
+  flex-direction: row;
 }
 
 .download-link-container {
+  flex: 1;
   padding-top: 25px;
   padding-bottom: 25px;
 }
