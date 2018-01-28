@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { walletwrapper } from '../utils/walletwrapper';
 import { updater } from '../utils/updater';
 import { traduction } from '../lang/lang';
 const { ipcRenderer } = require('electron');
@@ -9,14 +10,21 @@ const usericon = require('../../resources/images/logo1.png');
 
 const lang = traduction();
 
-export default class Sidebar extends Component {
+class Sidebar extends Component {
+  static propTypes = {
+    startStopWalletHandler: PropTypes.func,
+    starting: PropTypes.bool,
+    running: PropTypes.bool,
+    stopping: PropTypes.bool,
+    off: PropTypes.bool,
+    blocks: PropTypes.number,
+    headers: PropTypes.number,
+    connections: PropTypes.number,
+    walletInstalled: PropTypes.bool,
+  };
   constructor(props) {
     super(props);
     this.state = {
-      starting: false,
-      running: false,
-      stopping: false,
-      off: false,
       pathname: props.route.location.pathname,
       active: {
         default: '',
@@ -34,26 +42,22 @@ export default class Sidebar extends Component {
         about: '',
         wallet: '',
       },
-      blocks: 0,
-      headers: 0,
-      connections: 0,
-      walletInstalled: false,
       newVersionAvailable: false,
     };
 
     this.saveAndStopWallet = this.saveAndStopWallet.bind(this);
     this.startWallet = this.startWallet.bind(this);
     this.checkWalletVersion = this.checkWalletVersion.bind(this);
-    this.infoUpdate = this.infoUpdate.bind(this);
+    // this.infoUpdate = this.infoUpdate.bind(this);
   }
 
   componentDidMount() {
     const self = this;
     this.checkStateMenu(this.state.pathname);
-    this.infoUpdate();
-    this.timerInfo = setInterval(() => {
-      self.infoUpdate();
-    }, 5000);
+    // this.infoUpdate();
+    // this.timerInfo = setInterval(() => {
+    //   self.infoUpdate();
+    // }, 5000);
     this.timerCheckWalletVersion = setInterval(() => {
       this.checkWalletVersion();
     }, 600000);
@@ -72,29 +76,30 @@ export default class Sidebar extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.timerInfo);
+    // clearInterval(this.timerInfo);
     clearInterval(this.timerCheckWalletVersion);
   }
 
-  infoUpdate() {
-    const results = this.props.getStateValues('blocks', 'headers', 'connections', 'starting', 'running', 'stopping', 'off', 'walletInstalled');
-    const newState = {};
-    for (let key in results) {
-      // console.log(key, results[key]);
-      newState[key] = results[key];
-      }
-    this.setState(newState);
-  }
+  // infoUpdate() {
+  //   const results = this.props.getStateValues('blocks', 'headers', 'connections', 'starting', 'running', 'stopping', 'off', 'walletInstalled');
+  //   const newState = {};
+  //   for (let key in results) {
+  //     // console.log(key, results[key]);
+  //     newState[key] = results[key];
+  //   }
+  //   this.setState(newState);
+  // }
 
-  checkWalletVersion() {
+  async checkWalletVersion() {
+    const self = this;
     try {
-      let result = true;
-      let exists = updater.checkForWalletVersion();
-      if(exists){
-        result = updater.checkWalletVersion();
+      const exists = await updater.checkForWalletVersion();
+      if (exists) {
+        updater.checkWalletVersion((result) => {
+          console.log(result);
+          self.setState(() => { return { newVersionAvailable: result, }; });
+        });
       }
-        console.log(result);
-      this.setState(() => { return { newVersionAvailable: result, }; });
     } catch (err) { console.log(err); }
   }
 
@@ -163,11 +168,11 @@ export default class Sidebar extends Component {
 
   render() {
     let progressBar = 0;
-    if (this.state.blocks !== 0 && this.state.headers !== 0) {
-      progressBar = (this.state.blocks / this.state.headers) * 100;
+    if (this.props.blocks !== 0 && this.props.headers !== 0) {
+      progressBar = (this.props.blocks / this.props.headers) * 100;
     }
 
-    if (progressBar >= 100 && this.state.blocks < this.state.headers) {
+    if (progressBar >= 100 && this.props.blocks < this.props.headers) {
       progressBar = 99.99;
     }
 
@@ -229,8 +234,8 @@ export default class Sidebar extends Component {
         </ul>
         <div className="connections sidebar-section-container">
           <p>{`${lang.nabBarNetworkInfoSyncing} ${progressBar.toFixed(2)}%`}</p>
-          <p>{`( Total Headers Synced: ${this.state.headers} )`}</p>
-          <p>{`( ${lang.nabBarNetworkInfoBlock} ${this.state.blocks} ${lang.conjuctionOf} ${this.state.headers} )`}</p>
+          <p>{`( Total Headers Synced: ${this.props.headers} )`}</p>
+          <p>{`( ${lang.nabBarNetworkInfoBlock} ${this.props.blocks} ${lang.conjuctionOf} ${this.props.headers} )`}</p>
           <div className="progress custom_progress">
             <div
               className="progress-bar progress-bar-success progress-bar-striped"
@@ -241,21 +246,21 @@ export default class Sidebar extends Component {
               style={{ width: `${progressBar.toFixed(2)}%`, backgroundColor: '#8DA557' }}
             />
           </div>
-          <p>{`${lang.nabBarNetworkInfoActiveConnections}: ${this.state.connections}`}</p>
+          <p>{`${lang.nabBarNetworkInfoActiveConnections}: ${this.props.connections}`}</p>
         </div>
         <div className="sidebar-section-container">
-        {this.state.running //eslint-disable-line
-            ? !this.state.stopping
+          {this.props.running //eslint-disable-line
+            ? !this.props.stopping
               ? <button className="stopStartButton" onClick={this.saveAndStopWallet}>Stop Wallet</button>
               : <button className="stopStartButton" disabled>Wallet stopping...</button>
-            : !this.state.starting
+            : !this.props.starting
               ?
-                !this.state.walletInstalled
-                    ?
+              !this.props.walletInstalled
+                ?
                 <Link to="/downloads" id="a-tag-button-wrapper">
-                    <button className="stopStartButton">
-                        Click to install Wallet
-                    </button>
+                  <button className="stopStartButton">
+                    Click to install Wallet
+                  </button>
                 </Link>
                 :
                 <button
@@ -265,23 +270,38 @@ export default class Sidebar extends Component {
                   Start Wallet
                 </button>
               : <button className="stopStartButton" disabled>Wallet starting...</button>
-        }
-        {this.state.newVersionAvailable && this.state.walletInstalled
+          }
+          {this.state.newVersionAvailable && this.props.walletInstalled
             ? <div className="new-version">New Wallet Version Available</div>
             : null
-        }
-        {this.state.newVersionAvailable && this.state.walletInstalled
-            ? 
+          }
+          {this.state.newVersionAvailable && this.props.walletInstalled
+            ?
             <Link to="/downloads" id="a-tag-button-wrapper">
-               <button className="stopStartButton">
-                   Click to update Wallet
-                </button>
+              <button className="stopStartButton">
+                Click to update Wallet
+              </button>
             </Link>
             :
             null
-        }
+          }
         </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    starting: state.wallet.starting,
+    running: state.wallet.running,
+    stopping: state.wallet.stopping,
+    off: state.wallet.off,
+    blocks: state.wallet.blocks,
+    headers: state.wallet.headers,
+    connections: state.wallet.connections,
+    walletInstalled: state.wallet.walletInstalled,
+  };
+};
+
+export default connect(mapStateToProps)(Sidebar);

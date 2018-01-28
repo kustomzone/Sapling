@@ -41,6 +41,27 @@ export default class Wallet {
     });
   }
 
+  getBlockchainInfo() {
+    return new Promise((resolve, reject) => {
+      client.getBlockchainInfo().then((data) => {
+        return resolve(data);
+      }).catch((err) => {
+        return reject(err);
+      });
+    });
+  }
+
+  getWalletInfo() {
+    return new Promise((resolve, reject) => {
+      client.getWalletInfo().then((data) => {
+        return resolve(data);
+      }).catch((err) => {
+        return reject(err);
+      });
+    });
+  }
+
+
   getTransactions(account, count, skip) {
     return new Promise((resolve, reject) => {
       let a = account;

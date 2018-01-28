@@ -70,9 +70,9 @@ export default class App extends Component<Props> {
           <img className="splash-image" src={splash} />
         </div>
         <WalletWrapper>
-          <BalanceBanner route={this.props.route} />
           <Sidebar route={this.props.route} />
         </WalletWrapper>
+        <BalanceBanner route={this.props.route} />
         <div className="my_wrapper">
           {this.props.children}
         </div>
