@@ -28,6 +28,7 @@
     "package-aa-win-32": "npm run build && build --win -c ./os/win32.json -p always",
     "package-aa-win-64": "npm run build && build --win --x64 -c ./os/win64.json -p always",
     "package-aa-all": "npm run package-aa-win-32 && npm run package-aa-win-64",
+    "package-osx": "npm run build && build --mac --x64 -c ./os/osx.json",
     "package-win": "npm run build && build --win --x64 -c ./os/win64.json",
     "package-win-32": "npm run build && build --win --ia32 -c ./os/win32.json",
     "package-linux": "npm run build && build --linux -c ./os/lin64.json",
