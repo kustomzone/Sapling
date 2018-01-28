@@ -10,7 +10,7 @@ const lang = traduction();
 class BalanceBanner extends Component {
   static propTypes = {
     balance: PropTypes.number,
-    unconfirmed: PropTypes.number,
+    unconfirmed_balance: PropTypes.number,
     stake: PropTypes.number,
   };
   constructor(props) {
@@ -67,7 +67,7 @@ class BalanceBanner extends Component {
             <div className="total-container">
               <p className="subtitle">{lang.overviewTotal}:</p>
               <p className="borderBot">
-                <span className="desc-banner">{this.props.stake + this.props.balance + this.props.unconfirmed}</span>
+                <span className="desc-banner">{this.props.stake + this.props.balance + this.props.unconfirmed_balance}</span>
                 <span className="desc2"> {config.coinTicker}</span>
               </p>
             </div>
@@ -82,7 +82,7 @@ const mapStateToProps = state => {
   return {
     balance: state.wallet.balance,
     stake: state.wallet.stake,
-    unconfirmed: state.wallet.unconfirmed,
+    unconfirmed_balance: state.wallet.unconfirmed_balance,
   };
 };
 
