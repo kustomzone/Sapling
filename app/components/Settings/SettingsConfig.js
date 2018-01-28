@@ -72,6 +72,27 @@ export default class Config extends Component {
             });
           }
         });
+      } else if (process.platform === 'darwin') {
+        fs.readFile(`${homedir}/Library/Application Support/eccoin/eccoin.conf`, 'utf8', (err, data) => {
+          if (err) {
+            return console.log(err);
+          }
+
+          if (/staking=[0-9]/g.test(data)) {
+            if (/staking=1/g.test(data)) {
+              this.setState({ staking: true });
+            } else {
+              this.setState({ staking: false });
+            }
+          } else {
+            this.setState({ staking: false });
+            fs.appendFile(`${homedir}/Library/Application Support/eccoin/eccoin.conf`, 'staking=0', 'utf8', (err) => {
+              if (err) {
+                console.log(err);
+              }
+            });
+          }
+        });
       } else if (fs.existsSync(`${homedir}/appdata/roaming/eccoin/eccoin.conf`)) {
         fs.readFile(`${homedir}/appdata/roaming/eccoin/eccoin.conf`, 'utf8', (err, data) => {
           if (err) {

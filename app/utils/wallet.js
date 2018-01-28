@@ -175,7 +175,7 @@ export default class Wallet {
 
   walletstart(cb) {
     const path = `${homedir}/.eccoin-wallet/Eccoind`;
-    if (process.platform === 'linux') {
+    if (process.platform === 'linux' || process.platform === 'darwin') {
       runExec(`chmod +x ${path} && ${path}`, 1000).then(() => {
         return cb(true);
       })
