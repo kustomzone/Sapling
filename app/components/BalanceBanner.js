@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { traduction } from '../lang/lang';
 
@@ -45,28 +46,28 @@ class BalanceBanner extends Component {
             <div className="balance-container">
               <p className="subtitle">{lang.overviewMyBalance}:</p>
               <p className="borderBot">
-                <span className="desc">{this.props.balance}</span>
+                <span className="desc-banner">{this.props.balance}</span>
                 <span className="desc2"> {config.coinTicker}</span>
               </p>
             </div>
             <div className="stake-container">
               <p className="subtitle">{lang.overviewMyStaking}:</p>
               <p className="borderBot">
-                <span className="desc">{this.props.stake}</span>
+                <span className="desc-banner">{this.props.stake}</span>
                 <span className="desc2"> {config.coinTicker}</span>
               </p>
             </div>
             <div className="unconfirmed-container">
               <p className="subtitle">{lang.overviewMyUnconfirmed}:</p>
               <p className="borderBot">
-                <span className="desc">{this.props.unconfirmed}</span>
+                <span className="desc-banner">{this.props.unconfirmed}</span>
                 <span className="desc2"> {config.coinTicker}</span>
               </p>
             </div>
             <div className="total-container">
               <p className="subtitle">{lang.overviewTotal}:</p>
               <p className="borderBot">
-                <span className="desc">{this.props.stake + this.props.balance + this.props.unconfirmed}</span>
+                <span className="desc-banner">{this.props.stake + this.props.balance + this.props.unconfirmed}</span>
                 <span className="desc2"> {config.coinTicker}</span>
               </p>
             </div>
@@ -85,4 +86,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(BalanceBanner);
+export default withRouter(connect(mapStateToProps)(BalanceBanner));

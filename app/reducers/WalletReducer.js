@@ -39,8 +39,8 @@ export const getWalletInfo = data => {
   return {
     type: GET_WALLET_INFO,
     payload: {
-      unconfirmed: data.unconfirmed_balance,
-      immature: data.immature_balance,
+      unconfirmed_balance: data.unconfirmed_balance,
+      immature_balance: data.immature_balance,
     }
   };
 };
@@ -131,8 +131,8 @@ export default (state = initialState, action) => {
       });
     case GET_WALLET_INFO:
       return Object.assign({}, state, {
-        unconfirmed: action.payload.unconfirmed_balance,
-        immature: action.payload.immature_balance,
+        unconfirmed_balance: action.payload.unconfirmed_balance,
+        immature_balance: action.payload.immature_balance,
       });
     case SET_UNLOCKED_UNTIL:
       return Object.assign({}, state, {

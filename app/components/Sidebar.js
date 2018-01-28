@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { updater } from '../utils/updater';
@@ -73,6 +74,9 @@ class Sidebar extends Component {
     // console.log(props.router.location.pathname);
     this.checkStateMenu(props.route.location.pathname);
     this.setState({ pathname: props.route.location.pathname });
+  }
+
+  componentDidUpdate() {
   }
 
   componentWillUnmount() {
@@ -304,4 +308,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Sidebar);
+export default withRouter(connect(mapStateToProps)(Sidebar));
