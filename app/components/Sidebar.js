@@ -91,14 +91,15 @@ class Sidebar extends Component {
   // }
 
   async checkWalletVersion() {
+    const self = this;
     try {
-      let result = true;
       const exists = await updater.checkForWalletVersion();
       if (exists) {
-        result = updater.checkWalletVersion();
+        updater.checkWalletVersion((result) => {
+          console.log(result);
+          self.setState(() => { return { newVersionAvailable: result, }; });
+        });
       }
-      console.log(result);
-      this.setState(() => { return { newVersionAvailable: result, }; });
     } catch (err) { console.log(err); }
   }
 
