@@ -146,7 +146,7 @@
     "electron-dl": "^1.10.0",
     "electron-download-manager": "https://github.com/cryptounited/electron-download-manager.git",
     "electron-settings": "^3.1.1",
-    "electron-updater": "^2.16.1",
+    "electron-updater": "^2.18.2",
     "events": "^1.1.1",
     "font-awesome": "^4.7.0",
     "glob": "^7.1.2",
