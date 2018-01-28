@@ -1,4 +1,5 @@
 import Client from 'bitcoin-core';
+import shell from 'node-powershell';
 
 const homedir = require('os').homedir();
 const { exec, spawn } = require('child_process');
@@ -174,21 +175,32 @@ export default class Wallet {
   }
 
   walletstart(cb) {
-    const path = `${homedir}/.eccoin-wallet/Eccoind`;
     if (process.platform === 'linux' || process.platform === 'darwin') {
+      const path = `${homedir}/.eccoin-wallet/Eccoind`;
       runExec(`chmod +x ${path} && ${path}`, 1000).then(() => {
         return cb(true);
       })
-      .catch(() => {
-        cb(false);
-      });
+        .catch(() => {
+          cb(false);
+        });
     } else if (process.platform.indexOf('win') > -1) {
-      runExec(`${path}.exe`, 1000).then(() => {
-        return cb(true);
-      })
-      .catch(() => {
-        cb(false);
+      let path = `${homedir}\\.eccoin-wallet\\Eccoind.exe`;
+      path = `& '${path}'`;
+      const ps = new shell({ //eslint-disable-line
+        executionPolicy: 'Bypass',
+        noProfile: true
       });
+
+      ps.addCommand(path);
+      ps.invoke()
+        .then(() => {
+          return cb(true);
+        })
+        .catch(err => {
+          console.log(err);
+          cb(false);
+          ps.dispose();
+        });
     }
   }
 }

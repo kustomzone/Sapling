@@ -154,6 +154,7 @@
     "history": "^4.6.3",
     "jquery": "^3.2.1",
     "lowdb": "^0.16.2",
+    "node-powershell": "^3.3.1",
     "path": "^0.12.7",
     "project-version": "^1.0.0",
     "react": "^15.6.1",
