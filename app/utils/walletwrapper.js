@@ -285,7 +285,7 @@ const mapDispatchToProps = dispatch => {
     getInfoDux: (data) => {
       dispatch(getInfo(data));
     },
-    getWalletInfo: (data) => {
+    getWalletInfoDux: (data) => {
       dispatch(getWalletInfo(data));
     },
     setUnlockedUntilDux: (data) => {
