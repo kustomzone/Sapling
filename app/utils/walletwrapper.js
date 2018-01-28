@@ -132,8 +132,8 @@ class WalletWrapper extends Component {
     const { getWalletInfoDux } = this.props;
     wallet.getWalletInfo().then((data) => {
       getWalletInfoDux({
-        unconfirmed: data.unconfirmed_balance,
-        immature: data.immature_balance,
+        unconfirmed_balance: data.unconfirmed_balance,
+        immature_balance: data.immature_balance,
       });
     }).catch((err) => {
       this.processError(err);
