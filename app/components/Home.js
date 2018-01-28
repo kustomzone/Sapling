@@ -140,7 +140,7 @@ class Home extends Component {
       }
       WalletService.unlockWallet(passPhrase, timeL, false).then((data) => {
         if (data === null) {
-          event.emit('animate', `${lang.walletUnlockedFor} ${timeL} ${lang.sedonds}`);
+          event.emit('animate', `${lang.walletUnlockedFor} ${timeL} ${lang.seconds}`);
         }
         self.setState({ dialog: false, passPhrase: '', timeL: '' });
       }).catch((err) => {
@@ -163,43 +163,41 @@ class Home extends Component {
 
   render() {
     return (
-      <div className="my_wrapper">
-        <div className="home">
-          <div className="row">
-            <div className="col-md-12 ">
-              <div className="panel panel-default transaction-container">
-                <div className="panel-body">
-                  <div>
-                    <p className="title">{lang.overviewMyWallet}</p>
-                    {
-                      this.state.locked
-                        ? <img className="padicon" alt="wallet locked" src={lockedPad} onClick={this.showWalletUnlockDialog} />
-                        : <img className="padicon" alt="wallet unlocked" src={unlockedPad} onClick={this.showWalletUnlockDialog} />
-                    }
-                  </div>
-                  <p className="title">{lang.overviewMyLatest100Transactions}</p>
-                  <div className="selectfield">
-                    <select
-                      className="form-control"
-                      value={this.state.select}
-                      onChange={this.handleChange}
-                    >
-                      <option value="all">{lang.all}</option>
-                      <option value="send">{lang.send}</option>
-                      <option value="receive">{lang.received}</option>
-                      <option value="generate">{lang.staked}</option>
-                      <option value={0}>{lang.pending}</option>
-                      <option value={1}>{lang.confirmed}</option>
-                      <option value={-1}>{lang.orphaned}</option>
-                    </select>
-                  </div>
-                  <TransactionTable h={'250px'} option={this.state.select} countTras={100} />
+      <div className="home">
+        <div className="row">
+          <div className="col-md-12 ">
+            <div className="panel panel-default transaction-container">
+              <div className="panel-body">
+                <div>
+                  <p className="title">{lang.overviewMyWallet}</p>
+                  {
+                    this.props.unlocked_until === 0
+                      ? <img className="padicon" alt="wallet locked" src={lockedPad} onClick={this.showWalletUnlockDialog} />
+                      : <img className="padicon" alt="wallet unlocked" src={unlockedPad} onClick={this.showWalletUnlockDialog} />
+                  }
                 </div>
+                <p className="title">{lang.overviewMyLatest100Transactions}</p>
+                <div className="selectfield">
+                  <select
+                    className="form-control"
+                    value={this.state.select}
+                    onChange={this.handleChange}
+                  >
+                    <option value="all">{lang.all}</option>
+                    <option value="send">{lang.send}</option>
+                    <option value="receive">{lang.received}</option>
+                    <option value="generate">{lang.staked}</option>
+                    <option value={0}>{lang.pending}</option>
+                    <option value={1}>{lang.confirmed}</option>
+                    <option value={-1}>{lang.orphaned}</option>
+                  </select>
+                </div>
+                <TransactionTable h={'250px'} option={this.state.select} countTras={100} />
               </div>
             </div>
           </div>
-          {this.renderDialog()}
         </div>
+        {this.renderDialog()}
       </div>
     );
   }
