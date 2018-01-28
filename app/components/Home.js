@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import TransactionTable from './Transactions/TransactionTable';
 import { walletwrapper } from '../utils/walletwrapper';
 import { traduction } from '../lang/lang';
+
+import WalletService from '../services/wallet.service';
 
 const event = require('../utils/eventhandler');
 const lang = traduction();
@@ -9,7 +13,10 @@ const lang = traduction();
 const lockedPad = require('../../resources/images/padclose.png');
 const unlockedPad = require('../../resources/images/padopen.png');
 
-export default class Home extends Component {
+class Home extends Component {
+  static propTypes = {
+    unlocked_until: PropTypes.number,
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -17,9 +24,8 @@ export default class Home extends Component {
       dialog: false,
       timeL: '',
       passPhrase: '',
-      unlocked_until: true,
     };
-    this.infoUpdate = this.infoUpdate.bind(this);
+    // this.infoUpdate = this.infoUpdate.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.showWalletUnlockDialog = this.showWalletUnlockDialog.bind(this);
     this.cancelDialog = this.cancelDialog.bind(this);
@@ -47,29 +53,29 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    this.infoUpdate();
-    const self = this;
-    self.timerInfo = setInterval(() => {
-        self.infoUpdate();
-    }, 5000);
+    // this.infoUpdate();
+    // const self = this;
+    // self.timerInfo = setInterval(() => {
+    //   self.infoUpdate();
+    // }, 5000);
 
   }
   componentWillUnmount() {
-    clearInterval(this.timerInfo);
+    // clearInterval(this.timerInfo);
   }
 
-  infoUpdate() {
-    console.log(this.props);
-    const results = this.props.getStateValues('unlocked_until');
-    const newState = {};
-    for (let key in results) {
-      newState[key] = results[key];
-      }
-    this.setState(newState);
-  }
+  // infoUpdate() {
+  //   console.log(this.props);
+  //   const results = this.props.getStateValues('unlocked_until');
+  //   const newState = {};
+  //   for (let key in results) {
+  //     newState[key] = results[key];
+  //   }
+  //   this.setState(newState);
+  // }
 
   renderDialogBody() {
-    if (this.state.unlocked_until == 0) {
+    if (this.props.unlocked_until === 0) {
       return (
         <div>
           <div className="header">
@@ -124,77 +130,85 @@ export default class Home extends Component {
     this.setState({ dialog: false, passPhrase: '', timeL: '' });
   }
 
-    confirmDialog() {
-        const self = this;
-        if (this.state.unlocked_until == 0) {
-            const passPhrase = this.state.passPhrase;
-            let timeL = this.state.timeL;
-            if(timeL == 0) {
-                timeL = 300000;
-            }
-            walletwrapper.walletpassphrase(passPhrase, timeL, false).then((data) => {
-                if (data === null) {
-                    event.emit('animate', `${lang.walletUnlockedFor} ${timeL} ${lang.sedonds}`);
-                }
-                self.setState({ dialog: false, passPhrase: '', timeL: '' });
-            }).catch((err) => {
-                self.setState({ dialog: false, passPhrase: '', timeL: '' });
-            });
-        } else {
-            walletwrapper.walletlock().then((data) => {
-                if (data === null) {
-                    event.emit('animate', lang.walletLocked);
-                } else {
-                    event.emit('animate', lang.walletLockedError);
-                }
-            }).catch((err) => {
-                console.log(err);
-                event.emit('animate', lang.walletLockedError);
-            });
-            self.setState({ dialog: false, passPhrase: '', timeL: '' })
+  confirmDialog() {
+    const self = this;
+    if (this.props.unlocked_until === 0) {
+      const passPhrase = this.state.passPhrase;
+      let timeL = this.state.timeL;
+      if (timeL === 0) {
+        timeL = 300000;
+      }
+      WalletService.unlockWallet(passPhrase, timeL, false).then((data) => {
+        if (data === null) {
+          event.emit('animate', `${lang.walletUnlockedFor} ${timeL} ${lang.sedonds}`);
         }
+        self.setState({ dialog: false, passPhrase: '', timeL: '' });
+      }).catch((err) => {
+        self.setState({ dialog: false, passPhrase: '', timeL: '' });
+      });
+    } else {
+      WalletService.lockWallet().then((data) => {
+        if (data === null) {
+          event.emit('animate', lang.walletLocked);
+        } else {
+          event.emit('animate', lang.walletLockedError);
+        }
+      }).catch((err) => {
+        console.log(err);
+        event.emit('animate', lang.walletLockedError);
+      });
+      self.setState({ dialog: false, passPhrase: '', timeL: '' })
     }
+  }
 
   render() {
     return (
       <div className="my_wrapper">
-      <div className="home">
-        <div className="row">
-          <div className="col-md-12 ">
-            <div className="panel panel-default transaction-container">
-              <div className="panel-body">
-                <div>
-                  <p className="title">{lang.overviewMyWallet}</p>
-                  {
-                    this.state.locked
-                      ? <img className="padicon" alt="wallet locked" src={lockedPad} onClick={this.showWalletUnlockDialog} />
-                      : <img className="padicon" alt="wallet unlocked" src={unlockedPad} onClick={this.showWalletUnlockDialog} />
-                  }
+        <div className="home">
+          <div className="row">
+            <div className="col-md-12 ">
+              <div className="panel panel-default transaction-container">
+                <div className="panel-body">
+                  <div>
+                    <p className="title">{lang.overviewMyWallet}</p>
+                    {
+                      this.state.locked
+                        ? <img className="padicon" alt="wallet locked" src={lockedPad} onClick={this.showWalletUnlockDialog} />
+                        : <img className="padicon" alt="wallet unlocked" src={unlockedPad} onClick={this.showWalletUnlockDialog} />
+                    }
+                  </div>
+                  <p className="title">{lang.overviewMyLatest100Transactions}</p>
+                  <div className="selectfield">
+                    <select
+                      className="form-control"
+                      value={this.state.select}
+                      onChange={this.handleChange}
+                    >
+                      <option value="all">{lang.all}</option>
+                      <option value="send">{lang.send}</option>
+                      <option value="receive">{lang.received}</option>
+                      <option value="generate">{lang.staked}</option>
+                      <option value={0}>{lang.pending}</option>
+                      <option value={1}>{lang.confirmed}</option>
+                      <option value={-1}>{lang.orphaned}</option>
+                    </select>
+                  </div>
+                  <TransactionTable h={'250px'} option={this.state.select} countTras={100} />
                 </div>
-                <p className="title">{lang.overviewMyLatest100Transactions}</p>
-                <div className="selectfield">
-                  <select
-                    className="form-control"
-                    value={this.state.select}
-                    onChange={this.handleChange}
-                  >
-                    <option value="all">{lang.all}</option>
-                    <option value="send">{lang.send}</option>
-                    <option value="receive">{lang.received}</option>
-                    <option value="generate">{lang.staked}</option>
-                    <option value={0}>{lang.pending}</option>
-                    <option value={1}>{lang.confirmed}</option>
-                    <option value={-1}>{lang.orphaned}</option>
-                  </select>
-                </div>
-                <TransactionTable h={'250px'} option={this.state.select} countTras={100} />
               </div>
             </div>
           </div>
+          {this.renderDialog()}
         </div>
-        {this.renderDialog()}
-      </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    unlocked_until: state.wallet.unlocked_until,
+  };
+};
+
+export default connect(mapStateToProps)(Home);

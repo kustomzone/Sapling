@@ -70,10 +70,12 @@ export default class App extends Component<Props> {
           <img className="splash-image" src={splash} />
         </div>
         <WalletWrapper>
-          <BalanceBanner route={this.props.route} />
           <Sidebar route={this.props.route} />
-          {this.props.children}
         </WalletWrapper>
+        <BalanceBanner route={this.props.route} />
+        <div className="my_wrapper">
+          {this.props.children}
+        </div>
         <div className="snack">
           <p id="snackMsg" />
         </div>
